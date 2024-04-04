@@ -60,13 +60,33 @@ client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isCommand()) return;
 
   if (interaction.commandName === 'clear') {
-    conversationManager.clearHistory(interaction.user.id);
-    await interaction.reply('Your conversation history has been cleared.');
+    try {
+      conversationManager.clearHistory(interaction.user.id);
+      await interaction.reply('Your conversation history has been cleared.');
+    } catch (error) {
+      console.error('Error handling /clear command:', error);
+      // Handle the error gracefully, e.g., send an error message to the user
+      try {
+        await interaction.reply('Sorry, something went wrong while clearing your conversation history.');
+      } catch (replyError) {
+        console.error('Error sending error message:', replyError);
+      }
+    }
     return;
   }
 
   if (interaction.commandName === 'save') {
-    await commandHandler.saveCommand(interaction, [], conversationManager);
+    try {
+      await commandHandler.saveCommand(interaction, [], conversationManager);
+    } catch (error) {
+      console.error('Error handling /save command:', error);
+      // Handle the error gracefully, e.g., send an error message to the user
+      try {
+        await interaction.reply('Sorry, something went wrong while saving your conversation.');
+      } catch (replyError) {
+        console.error('Error sending error message:', replyError);
+      }
+    }
     return;
   }
 });
