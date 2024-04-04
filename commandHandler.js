@@ -42,26 +42,21 @@ class CommandHandler {
     
       try {
         const maxLength = 1900;
+        const lines = conversationText.split('\n');
         const chunks = [];
+        let currentChunk = '';
     
-        // Split the conversation into chunks of maxLength characters or less
-        let startIndex = 0;
-        while (startIndex < conversationText.length) {
-          let endIndex = startIndex + maxLength;
-          if (endIndex >= conversationText.length) {
-            endIndex = conversationText.length;
+        for (const line of lines) {
+          if (currentChunk.length + line.length + 1 <= maxLength) {
+            currentChunk += (currentChunk ? '\n' : '') + line;
           } else {
-            // Find the last newline character within the chunk
-            while (endIndex > startIndex && conversationText[endIndex] !== '\n') {
-              endIndex--;
-            }
-            if (endIndex === startIndex) {
-              endIndex = startIndex + maxLength;
-            }
+            chunks.push(currentChunk);
+            currentChunk = line;
           }
-          const chunk = conversationText.slice(startIndex, endIndex).trim();
-          chunks.push(chunk);
-          startIndex = endIndex;
+        }
+    
+        if (currentChunk) {
+          chunks.push(currentChunk);
         }
     
         // Send each chunk as a separate message
