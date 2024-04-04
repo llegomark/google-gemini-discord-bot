@@ -86,7 +86,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
     }
     return;
-  }
+  }  
 });
 
 client.on(Events.MessageCreate, async (message) => {

@@ -35,6 +35,11 @@ class CommandHandler {
       await interaction.reply('> `There is no conversation to save.`');
       return;
     }
+
+    if (interaction.channel.type === ChannelType.DM) {
+      await interaction.reply('> `You are already in a DM with me. The conversation is saved here.`');
+      return;
+    }
   
     const conversationText = conversation
       .map(line => `${line.role === 'user' ? 'User' : 'Bot'}: ${line.parts[0].text}`)
