@@ -62,13 +62,17 @@ client.on(Events.InteractionCreate, async (interaction) => {
 client.on(Events.MessageCreate, async (message) => {
   try {
     if (message.author.bot) return;
+
     const isDM = message.channel.type === ChannelType.DM;
+
     if (message.mentions.users.has(client.user.id) || isDM) {
       const messageContent = message.content.replace(new RegExp(`<@!?${client.user.id}>`), '').trim();
+
       if (messageContent === '') {
         await message.reply("> `It looks like you didn't say anything. What would you like to talk about?`");
         return;
       }
+
       conversationQueue.push({ message, messageContent });
     }
   } catch (error) {
@@ -79,7 +83,23 @@ client.on(Events.MessageCreate, async (message) => {
 
 async function processConversation({ message, messageContent }) {
   try {
-    await message.channel.sendTyping();
+    const typingInterval = 2000;
+    let typingIntervalId;
+
+    // Start the typing indicator
+    const startTyping = async () => {
+      typingIntervalId = setInterval(() => {
+        message.channel.sendTyping();
+      }, typingInterval);
+    };
+
+    // Stop the typing indicator
+    const stopTyping = () => {
+      clearInterval(typingIntervalId);
+    };
+
+    await startTyping();
+
     const model = await genAI.getGenerativeModel({ model: config.modelName });
     const chat = model.startChat({
       history: conversationManager.getHistory(message.author.id),
@@ -87,6 +107,9 @@ async function processConversation({ message, messageContent }) {
     });
     const botMessage = await message.reply('> `Generating a response...`');
     await conversationManager.handleModelResponse(botMessage, () => chat.sendMessageStream(messageContent), message);
+    
+    await stopTyping();
+    
     // Check if it's a new conversation or the bot is mentioned
     if (conversationManager.isNewConversation(message.author.id) || message.mentions.users.has(client.user.id)) {
       const clearCommandMessage = `
