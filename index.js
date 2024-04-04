@@ -1,10 +1,22 @@
 require('dotenv').config();
+const express = require('express');
 const { Client, GatewayIntentBits, ChannelType, Events, ActivityType } = require('discord.js');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { config } = require('./config');
 const { ConversationManager } = require('./conversationManager');
 const { CommandHandler } = require('./commandHandler');
 const async = require('async');
+
+const app = express();
+const port = process.env.PORT || 4000;
+
+app.get('/', (req, res) => {
+  res.send('Gemini Discord Bot is running!');
+});
+
+app.listen(port, () => {
+  console.log(`Gemini Discord Bot is listening on port ${port}`);
+});
 
 const client = new Client({
   intents: [
