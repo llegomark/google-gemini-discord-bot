@@ -61,15 +61,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
   if (interaction.commandName === 'clear') {
     try {
-      conversationManager.clearHistory(interaction.user.id);
-      await interaction.reply('Your conversation history has been cleared.');
+      await commandHandler.clearCommand(interaction, [], conversationManager);
     } catch (error) {
       console.error('Error handling /clear command:', error);
-      // Handle the error gracefully, e.g., send an error message to the user
-      try {
-        await interaction.reply('Sorry, something went wrong while clearing your conversation history.');
-      } catch (replyError) {
-        console.error('Error sending error message:', replyError);
+      if (error.code !== 40060) { // Check for "Interaction has already been acknowledged" error
+        try {
+          await interaction.reply('Sorry, something went wrong while clearing your conversation history.');
+        } catch (replyError) {
+          console.error('Error sending error message:', replyError);
+        }
       }
     }
     return;

@@ -22,9 +22,10 @@ class CommandHandler {
       }
     }
   
-    async clearCommand(message, args, conversationManager) {
-      conversationManager.clearHistory(message.author.id);
-      await message.reply('> `Your conversation history has been cleared.`');
+    async clearCommand(interaction, args, conversationManager) {
+      await interaction.deferReply({ ephemeral: true }); // Acknowledge the interaction before processing
+      conversationManager.clearHistory(interaction.user.id);
+      await interaction.editReply('> `Your conversation history has been cleared.`');
     }
 
     async saveCommand(interaction, args, conversationManager) {
