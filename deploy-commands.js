@@ -4,10 +4,12 @@ const { SlashCommandBuilder, REST, Routes } = require('discord.js');
 const commands = [
   new SlashCommandBuilder()
     .setName('clear')
-    .setDescription('Clears the conversation history.'),
+    .setDescription('Clears the conversation history.')
+    .setDMPermission(true),
   new SlashCommandBuilder()
     .setName('save')
-    .setDescription('Saves the current conversation and sends it to your inbox.'),
+    .setDescription('Saves the current conversation and sends it to your inbox.')
+    .setDMPermission(true),
 ].map(command => command.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_BOT_TOKEN);

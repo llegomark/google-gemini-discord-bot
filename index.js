@@ -65,7 +65,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
       await interaction.reply('Your conversation history has been cleared.');
     } catch (error) {
       console.error('Error handling /clear command:', error);
-      // Handle the error gracefully, e.g., send an error message to the user
       try {
         await interaction.reply('Sorry, something went wrong while clearing your conversation history.');
       } catch (replyError) {
@@ -80,7 +79,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
       await commandHandler.saveCommand(interaction, [], conversationManager);
     } catch (error) {
       console.error('Error handling /save command:', error);
-      // Handle the error gracefully, e.g., send an error message to the user
       try {
         await interaction.reply('Sorry, something went wrong while saving your conversation.');
       } catch (replyError) {
@@ -97,7 +95,7 @@ client.on(Events.MessageCreate, async (message) => {
 
     const isDM = message.channel.type === ChannelType.DM;
 
-    if (message.mentions.users.has(client.user.id) || isDM) {
+    if (isDM || message.mentions.users.has(client.user.id)) {
       const messageContent = message.content.replace(new RegExp(`<@!?${client.user.id}>`), '').trim();
 
       if (messageContent === '') {
