@@ -105,6 +105,23 @@ client.on(Events.MessageCreate, async (message) => {
         return;
       }
 
+      // Check if the message contains emojis, pictures, attachments, embeds, or stickers
+      if (
+        message.content.match(/\p{Emoji}/u) ||
+        message.attachments.size > 0 ||
+        message.embeds.length > 0 ||
+        message.stickers.size > 0
+      ) {
+        await message.reply("> `Sorry, I can only process plain text messages. Please send a message without emojis, pictures, attachments, embeds, or stickers.`");
+        return;
+      }
+
+      // Check if the message is too long
+      if (messageContent.length > 1500) {
+        await message.reply("> `Sorry, your message is too long. Please keep your messages under 1500 characters.`");
+        return;
+      }
+
       conversationQueue.push({ message, messageContent });
     }
   } catch (error) {
