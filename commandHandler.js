@@ -1,3 +1,5 @@
+const { ChannelType } = require('discord.js');
+
 class CommandHandler {
   constructor() {
     this.commands = {
@@ -30,7 +32,7 @@ class CommandHandler {
   async saveCommand(interaction, args, conversationManager) {
     const userId = interaction.user.id;
     const conversation = conversationManager.getHistory(userId);
-  
+
     if (conversation.length === 0) {
       await interaction.reply('> `There is no conversation to save.`');
       return;
